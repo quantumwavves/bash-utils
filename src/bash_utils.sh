@@ -102,6 +102,21 @@ optimize_images()
 
 }
 
+gen-mac-addr()
+{
+  macaddr=$(printf "52:54:%02x:%02x:%02x:%02x" $((RANDOM & 0xff)) $((RANDOM & 0xff)) $((RANDOM & 0xff)) $((RANDOM & 0xff)))
+  echo -e "[=] New Mac Address is: ${cyan}$macaddr${white}"
+}
+
+pull-all-repos()
+{
+  echo -e "[-] Put a path for pull a subdirectorys with github"
+  read -p "[?] Insert your path: " repos_path
+  echo -e "[*] Pulling a repositorys..."
+  find $repos_path -maxdepth 1 -type d -exec sh -c '(cd {} && git pull)' ';'
+}
+
+
 menu(){
   echo -e "+---------------------------------------------------------------------------------+"
   echo -e "|                                                                                 |"
@@ -111,7 +126,7 @@ menu(){
   echo -e "|    ${cyan}██${blue}╔══${cyan}██${blue}╗${cyan}██${blue}╔══${cyan}██${blue}║╚════${cyan}██${blue}║${cyan}██${blue}╔══${cyan}██${blue}║${blue}    ${cyan}██${blue}║${cyan}   ██${blue}║   ${cyan}██${blue}║${cyan}   ██${blue}║${cyan}██${blue}║     ╚════${cyan}██${blue}║${white}    |"
   echo -e "|    ${cyan}██████${blue}╔╝${cyan}██${blue}║${cyan}  ██${blue}║${cyan}███████${blue}║${cyan}██${blue}║${cyan}  ██${blue}║    ╚${cyan}██████${blue}╔╝${cyan}   ██${blue}║${cyan}   ██${blue}║${cyan}███████${blue}╗${cyan}███████${blue}║${white}    |"
   echo -e "|    ${blue}╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝     ╚═════╝    ╚═╝   ╚═╝╚══════╝╚══════╝${white}    |"
-  echo -e "|           Docs: ${cyan}https://quantumwavves.github.io/projects/bash-utils${white}             |"
+  echo -e "|    Docs: ${cyan}https://quantumwavves.github.io/projects/2023-12-12-bash-utils${white}         |"
   echo -e "+---------------------------------------------------------------------------------+"
   echo
   echo -e "${white}                        Welcome to bash utils (=^.^=).              ${white}"
@@ -120,21 +135,25 @@ menu(){
   echo
   echo -e "System: ${bgreen}$get_dist Linux${white}"
   echo -e "${red}[0]${white} Exit"
-  echo -e "$cyan[1]$white Generate ssh key"
-  echo -e "$cyan[2]$white Optimize images" 
+  echo -e "${cyan}[1]${white} Generate ssh key"
+  echo -e "${cyan}[2]${white} Optimize images" 
+  echo -e "${cyan}[3]${white} Generate MAC Adress"
+  echo -e "${cyan}[4]${white} Pull (Sync) git repos"
   echo 
   read -p "[?] Enter value: " option
   
   case "$option" in
+    0) return 0
+    ;;
     1) gen_key_ssh
     ;;
     2) optimize_images
     ;;
-    0)
-      return 0
+    3) gen-mac-addr
+    ;;
+    4) pull-all-repos
     ;;
   esac
 }
-
 get_os
 menu
